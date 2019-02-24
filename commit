@@ -1,0 +1,5 @@
+set -e
+#pep 8 linter
+#js linter
+#./test
+# Get my commit script from macbook
