@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+<script src="CodeMirror/lib/codemirror.js"></script>
+<link rel="stylesheet" href="CodeMirror/lib/codemirror.css">
+<script src="CodeMirror/mode/javascript/javascript.js"></script>
+</head>
+
+<body>
+</body>
+<textarea id="code" name="code">
+</textarea>
+
+    <script>
+var nonEmpty = false;
+var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+  mode: "application/xml",
+  styleActiveLine: true,
+  lineNumbers: true,
+  lineWrapping: true
+});
+
+function toggleSelProp() {
+  nonEmpty = !nonEmpty;
+  editor.setOption("styleActiveLine", {nonEmpty: nonEmpty});
+  var label = nonEmpty ? 'Disable nonEmpty option' : 'Enable nonEmpty option';
+  document.getElementById('toggleButton').innerText = label;
+}
+</script>
+
+
+</html>
