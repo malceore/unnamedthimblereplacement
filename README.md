@@ -1,6 +1,7 @@
-# Project Title
+# Thimble Replacement
 
-One Paragraph of project description goes here
+Basically a turn key self-hosted solution for the now sunsetting Mozilla Thimble Project.
+https://thimble.mozilla.org/en-US/
 
 ## Getting Started
 
