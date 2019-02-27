@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet"  href="stylesheet.css">
+    <link rel="stylesheet" href="CodeMirror/lib/codemirror.css">
+    <link rel="stylesheet" href="CodeMirror/theme/cobalt.css">
+    <script type="text/javascript" src="CodeMirror/lib/codemirror.js"></script>
+    <script type="text/javascript" src="CodeMirror/mode/xml/xml.js"></script>
+    <title> Editor - mk0.2 </title>
+</head>
+<body>
+    <nav>
+        <div>Welcome, %s</div>
+    </nav>
+    <main class="content">
+        <aside>
+            <button class="btn">Run</button>
+            <button class="btn">File</button>
+            <button class="btn">Help</button>
+        </aside>
+        <div class="text"> <textarea id="code" class="editor"></textarea> </div>
+        <iframe class="iframe" frameBorder="0"></iframe>
+    </main>
+    <footer>Brandon T. Wood @ Malceore.io</footer>
+</body>
+<script src="editor.js"></script>
+</html>

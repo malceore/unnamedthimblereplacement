@@ -1,0 +1,5 @@
+rm bin/main
+set -e
+go test
+go build -o bin/main
+bin/./main
