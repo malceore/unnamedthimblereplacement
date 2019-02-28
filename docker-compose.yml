@@ -1,14 +1,15 @@
 version: '3'
+services:
   db:
     image: postgres
     ports:
-    - "5432:5000"
+      - "5432:5000"
     environment:
       POSTGRES_USER: "thimble"
       POSTGRES_PASSWORD: "c1oudc0w"
   app:
-    build: .
+    image: app5
     ports:
-      - "8080:9000"
+      - "9191:9191"
     depends_on:
       - db
