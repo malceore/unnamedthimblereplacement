@@ -3,12 +3,13 @@ services:
   db:
     image: postgres
     ports:
-      - "5432:5000"
+      - "5432:5432"
     environment:
-      POSTGRES_USER: "thimble"
-      POSTGRES_PASSWORD: "c1oudc0w"
+      POSTGRES_DB: app
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
   app:
-    image: app5
+    image: app
     ports:
       - "9191:9191"
     depends_on:

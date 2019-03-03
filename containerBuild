@@ -1,0 +1,5 @@
+#https://www.callicoder.com/docker-golang-image-container-example/
+docker rm app --force
+docker build -t app .
+#docker run -p 8080:8080 
+docker-compose up

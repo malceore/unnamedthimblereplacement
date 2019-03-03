@@ -33,6 +33,10 @@
   name = "github.com/gorilla/securecookie"
   version = "1.1.1"
 
+[[constraint]]
+  name = "github.com/lib/pq"
+  version = "1.0.0"
+
 [prune]
   go-tests = true
   unused-packages = true
