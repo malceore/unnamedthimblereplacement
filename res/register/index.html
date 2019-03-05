@@ -6,20 +6,24 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet"  href="stylesheet.css">
     <script>
-    function done(nothing){
-        console.log(nothing.username);
-    }
     </script>
 </head>
 <body>
 <main>
-<form method="post" action="/login">
+<h2>Register</h2>
+<small> Please fill out this form the register</small><br><br>
+<form method="post" action="/register">
+    Email:<br>
+    <input type="text" name="email"> <br> <br>
     Username:<br>
     <input type="text" name="username"> <br>
     Password:<br>
     <input type="password" name="password"> <br> <br>
-    <input type="submit" value="Submit"> <br>
-  </form>
+    Repeat Password:<br>
+    <input type="password" name="retype"> <br> <br>
+    <small>By creating an account you agree to our Terms & Privacy.</small><br><br>
+    <div style="text-align:center;"><input type="submit" value="Register"> <br></div>
+</form>
 </main>
 </body>
 </html>

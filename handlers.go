@@ -22,28 +22,40 @@ func HomeHandler(response http.ResponseWriter, request *http.Request){
     }
     var indexbody = string(bytes)
     if len(username) > 0 {
-        fmt.Fprintf(response, indexbody, username)
+        fmt.Fprintf(response, indexbody, "Welcome " + username + "! ")
     } else {
-        fmt.Fprintf(response, indexbody, "<a href='/login'>Login</a>")
+        var login = `Please <a href="/login">Login</a> or <a href="/register">Register</a> `
+        fmt.Fprintf(response, indexbody, login)
     }
 }
 
-func EditorHandler(response http.ResponseWriter, request *http.Request){
-    username := GetUserName(request)
-    if len(username) > 0 {
+// for POST
+func RegisterHandler(response http.ResponseWriter, request *http.Request) {
+    name := request.FormValue("username")
+    pass1 := request.FormValue("password")
+//    pass2 := request.FormValue("retype")
+    email := request.FormValue("email")
 
+    fmt.Println("DEBUG::Registering: " + name + "," + email)
+
+    redirectTarget := "/"
+    if name != "" && password != "" && email != "" {
+           SetCookie(name, response)
+           redirectTarget = "/home"
+           registerDatabase(name, email, pass1)
     } else {
-        http.Redirect(response, request, "/login", 302)
+            redirectTarget = "/register"
     }
+    http.Redirect(response, request, redirectTarget, 302)
 }
+
 
 // for POST
 func LoginHandler(response http.ResponseWriter, request *http.Request) {
     name := request.FormValue("username")
     pass := request.FormValue("password")
-    fmt.Println("input: " + name + "," + pass)
     redirectTarget := "/"
-    if name == "test" && pass == "password" {
+    if validateUser(name, pass) {
            SetCookie(name, response)
            redirectTarget = "/home"
     } else {

@@ -1,5 +1,11 @@
 rm main
 
+export DB_HOST="192.168.0.107"
+export DB_PORT="5432"
+export DB_USER="test"
+export DB_PASS="test"
+export DB_NAME="app"
+
 set -e
 go test
 go build -o bin/main 

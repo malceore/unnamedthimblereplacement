@@ -1,15 +1,19 @@
 <html>
 <head>
 </head>
-<body>
-
-<nav>
-	<h2> Welcome! Please sign in </h2>
-	<small>%s</small>
-</nav>
-<main>This is place holder, soon it will be a nice landing page we can explain what the goal of this website is</main>
-<footer>Brandon T. Wood</footer>
-
+<body style="background-color:grey; padding:1em">
+  <nav style="background-color: darkgrey; padding:0.5em;">
+    <div><h2> Website Name</h2></div>
+    <!-- Warning this find and replace looks for the first percent sign only, fragile. -->
+    <div>%s<div>
+  </nav>
+  <main style="background-color:white; height:500px; width:100%;">
+	This is place holder,
+	soon it will be a nice
+	landing page we can explain
+	what the goal of this website is
+  </main>
+  <footer style="width:100%; background-color:darkgrey; text-align:center; padding: 1em">Brandon T. Wood @ 2019</footer>
 </body>
 <!--
  http.Redirect(response, request, "/login", 302)

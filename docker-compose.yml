@@ -12,5 +12,12 @@ services:
     image: app
     ports:
       - "9191:9191"
+    environment:
+      - DB_HOST="192.168.0.107"
+      - DB_PORT="5432"
+      - DB_USER="test"
+      - DB_PASS="test"
+      - DB_NAME="app"
+
     depends_on:
       - db
