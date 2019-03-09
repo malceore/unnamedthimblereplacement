@@ -1,5 +1,7 @@
+_vendor-20190301193134
 _vendor*
 main
 todo
 true
 vendor
+bin/*

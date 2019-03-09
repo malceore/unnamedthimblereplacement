@@ -22,7 +22,7 @@ func HomeHandler(response http.ResponseWriter, request *http.Request){
     }
     var indexbody = string(bytes)
     if len(username) > 0 {
-        fmt.Fprintf(response, indexbody, "Welcome " + username + "! ")
+        fmt.Fprintf(response, indexbody, `Welcome ` + username + `! <form action="/create"> <input name="username" type="hidden" value="` + username + `"><input type="submit" value="New Project"> </form>`)
     } else {
         var login = `Please <a href="/login">Login</a> or <a href="/register">Register</a> `
         fmt.Fprintf(response, indexbody, login)
@@ -49,7 +49,6 @@ func RegisterHandler(response http.ResponseWriter, request *http.Request) {
     http.Redirect(response, request, redirectTarget, 302)
 }
 
-
 // for POST
 func LoginHandler(response http.ResponseWriter, request *http.Request) {
     name := request.FormValue("username")
@@ -73,8 +72,18 @@ func LogoutHandler(response http.ResponseWriter, request *http.Request) {
         MaxAge: -1,
     }
     http.SetCookie(response, cookie)
-    http.Redirect(response, request, "/", 302)
+    http.Redirect(response, request, "/home", 302)
 }
+
+
+// for POST
+func CreateProjectHandler(response http.ResponseWriter, request *http.Request) {
+    name := request.FormValue("username")
+    fmt.Println("DEBUG::Create new project For: " + name)
+    newProject(name)
+    http.Redirect(response, request, "/editor", 302)
+}
+
 
 /*
 ** Start of assisting functions.
