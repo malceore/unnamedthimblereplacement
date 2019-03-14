@@ -13,13 +13,17 @@
 </head>
 <body>
     <nav>
-        <div>Welcome, %s</div>
+	Welcome
     </nav>
     <main class="content">
         <aside>
-            <button class="btn">Run</button>
-            <button class="btn">File</button>
-            <button class="btn">Help</button>
+            <button class="btn" style="background-color:darkgreen;" onclick="updateContents()" >Refresh</button>
+            <button class="btn" style="background-color:darkblue;" onclick="saveContents()" >Save</button>
+	    <button class="btn" style="background-color:darkred;">Help</button>
+	    <div class="filediv" style="background-color:blue; padding:0.5em;">
+		    Files<br>
+	            <!--<button class="btn"><u>Files</u></button>-->
+	    </div>
         </aside>
         <div class="text"> <textarea id="code" class="editor"></textarea> </div>
         <iframe class="iframe" frameBorder="0"></iframe>
@@ -27,4 +31,9 @@
     <footer>Brandon T. Wood @ Malceore.io</footer>
 </body>
 <script src="editor.js"></script>
+<script>
+  const files=%s;
+  console.log(files);
+  loadFiles(files);
+</script>
 </html>

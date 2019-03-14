@@ -15,7 +15,8 @@ func newRouter() *mux.Router {
         r.HandleFunc("/logout", LogoutHandler).Methods("POST")
         r.HandleFunc("/register", RegisterHandler).Methods("POST")
 	r.HandleFunc("/create", CreateProjectHandler)
-
+        r.HandleFunc("/editor/{id:[0-9]+}", EditorHandler)
+        r.HandleFunc("/project/{id:[0-9]+}", ProjectHandler)
 	staticFileDirectory := http.Dir("./res/")
 	staticFileHandler := http.StripPrefix("/", http.FileServer(staticFileDirectory))
 	r.PathPrefix("/").Handler(staticFileHandler).Methods("GET")

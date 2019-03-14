@@ -18,6 +18,13 @@ var (
   db, err  = sql.Open("postgres", psqlInfo)
 )
 
+// Forgot to give table a filename value, so dumb.
+var file struct {
+    fileId string
+    contents string
+}
+
+
 func connectDatabase() {
   //psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+ "password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
   //db, err := sql.Open("postgres", psqlInfo)
@@ -59,6 +66,14 @@ func validateUser(username string, password string) (bool){
     return false
   }
   return true
+}
+
+func getFiles(projectId string) (*sql.Rows){
+  entries, err := db.Query("SELECT fileId, contents FROM files WHERE projectId='" + projectId + "';")
+  if err != nil || entries == nil{
+    return nil
+  }
+  return entries
 }
 
 /*
