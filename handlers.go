@@ -8,9 +8,7 @@ import (
         "strings"
 )
 
-var cookieHandler = securecookie.New(
-    securecookie.GenerateRandomKey(64),
-    securecookie.GenerateRandomKey(32))
+var cookieHandler = securecookie.New(securecookie.GenerateRandomKey(64), securecookie.GenerateRandomKey(32))
 
 /*
 ** Start of handler functions
@@ -23,7 +21,7 @@ func HomeHandler(response http.ResponseWriter, request *http.Request){
     }
     var indexbody = string(bytes)
     if len(username) > 0 {
-        fmt.Fprintf(response, indexbody, `Welcome ` + username + `! <form action="/create"> <input name="username" type="hidden" value="` + username + `"><input type="submit" value="New Project"> </form>`)
+        fmt.Fprintf(response, indexbody, `Welcome ` + username + `! <form action="/remix/1"> <input name="username" type="hidden" value="` + username + `"><input type="submit" value="New Project"> </form>`)
     } else {
         var login = `Please <a href="/login">Login</a> or <a href="/register">Register</a> `
         fmt.Fprintf(response, indexbody, login)
@@ -33,10 +31,8 @@ func HomeHandler(response http.ResponseWriter, request *http.Request){
 func RegisterHandler(response http.ResponseWriter, request *http.Request) {
     name := request.FormValue("username")
     pass1 := request.FormValue("password")
-//    pass2 := request.FormValue("retype")
     email := request.FormValue("email")
-
-    fmt.Println("DEBUG::Registering: " + name + "," + email)
+    fmt.Println("HA::Registering: " + name + "," + email)
 
     redirectTarget := "/"
     if name != "" && password != "" && email != "" {
@@ -74,21 +70,27 @@ func LogoutHandler(response http.ResponseWriter, request *http.Request) {
     http.Redirect(response, request, "/home", 302)
 }
 
-func CreateProjectHandler(response http.ResponseWriter, request *http.Request) {
-    name := request.FormValue("username")
-    fmt.Println("DEBUG::Create new project For: " + name)
-    newProject(name)
-    http.Redirect(response, request, "/editor", 302)
+
+func RemixProjectHandler(response http.ResponseWriter, request *http.Request) {
+    var project = strings.Split(request.URL.Path, "/")
+    if project[2] == "" {
+      fmt.Fprintf(response, "HA::Error Occured, please specify a project!")
+    } else{
+      name := request.FormValue("username")
+      fmt.Println("HA::Remix project For: " + name)
+      var newProjectId string = cloneProject(project[2], getUserId(name))
+      http.Redirect(response, request, "/editor/" + newProjectId, 302)
+   }
 }
 
-func ProjectHandler(response http.ResponseWriter, request *http.Request) {
-    project := request.URL.Path
-    if project == "" {
-      fmt.Fprintf(response, "Error Occured, please specify a project!")
-    } else{
-      fmt.Fprintf(response, "A project is returned to you sir! PATH " + project)
-    }
+
+func SaveHandler(response http.ResponseWriter, request *http.Request){
+     fileId := request.FormValue("fileid")
+     contents := request.FormValue("contents")
+     saveFile(fileId, contents)
+     //fmt.Println("DEBUG::Saved file " + contents + " " + fileId)
 }
+
 
 func EditorHandler(response http.ResponseWriter, request *http.Request){
     // Confirm that a project was given or just throw an error.

@@ -1,5 +1,9 @@
-#https://www.callicoder.com/docker-golang-image-container-example/
+runtime=""
+if [ "$1" == "clean" ]; then
+    runtime="--force-recreate"
+    echo "Clean run.."
+fi
 docker rm app --force
 docker build -t app .
 #docker run -p 8080:8080 
-docker-compose up
+docker-compose up $runtime

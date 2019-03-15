@@ -24,39 +24,45 @@ var file struct {
     contents string
 }
 
-
 func connectDatabase() {
-  //psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+ "password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
-  //db, err := sql.Open("postgres", psqlInfo)
   err = db.Ping()
   if err != nil {
     panic(err)
   }
   //defer db.Close()
-  fmt.Println("Successfully connected to Postgresql Database!")
+  fmt.Println("DB::Successfully connected to Postgresql Database!")
 }
 
 func setupDatabase() {
   // Create database and table for users if non exists.
-  db.Exec("CREATE DATABASE " + dbname + ";")
-  // On next iteration username should be unique..
-  db.Exec(`CREATE TABLE users (userId SERIAL PRIMARY KEY, username TEXT, password TEXT, email TEXT UNIQUE NOT NULL);`)
-  db.Exec(`CREATE TABLE projects (projectId SERIAL PRIMARY KEY, userId SERIAL REFERENCES users(userId), name TEXT);`)
-  db.Exec(`CREATE TABLE files (fileId SERIAL PRIMARY KEY, projectId SERIAL REFERENCES projects(projectId), contents TEXT);`)
-  //db.Query("INSERT INTO users (username, email, password) VALUES ('default', 'default@defaulters.com', 'test');")
-  // Not yet sure how we get the user ID
-  //entries, err := db.Query("SELECT userId FROM users WHERE username='default';")
-  //db.Query("INSERT INTO projects (username, email, password) VALUES ('default', 'default@defaulters.com', 'test');")
-  fmt.Println("DEBUGG::Initial database setup complete!")
+  _,err = db.Exec("CREATE DATABASE IF NOT EXIST " + dbname + ";")
+  _,err = db.Query("SELECT userId FROM users WHERE username=user")
+  if (err != nil) {
+    // construct tables
+    db.Exec(`CREATE TABLE users (userId SERIAL PRIMARY KEY, username TEXT UNIQUE, password TEXT, email TEXT UNIQUE NOT NULL);`)
+    db.Exec(`CREATE TABLE projects (projectId SERIAL PRIMARY KEY, userId SERIAL REFERENCES users(userId), name TEXT);`)
+    db.Exec(`CREATE TABLE files (fileId SERIAL PRIMARY KEY, projectId SERIAL REFERENCES projects(projectId), fileName TEXT, contents TEXT);`)
+
+    var entries *sql.Rows
+    // Inject default user and project
+    entries, err = db.Query("INSERT INTO users (username, email, password) VALUES ('user', 'default@defaulters.com', 'user') RETURNING userId;")
+    var userId string=returnSingleRow(entries)
+
+    entries, err=db.Query("INSERT INTO projects (userId, name) VALUES ('" + userId +  "', 'Default') RETURNING projectId;")
+    var projectId string=returnSingleRow(entries)
+
+    _, err=db.Query("INSERT INTO files (projectId, fileName, contents) VALUES ('" + projectId + ", 'index.html', 'PGgxPldlbGNvbWUgdG8gVGhpbWJsZTwvaDE+');")
+    fmt.Println("DB::Initial database setup complete!")
+  }
 }
 
 func registerDatabase(username string, email string, password string){
     _, err = db.Query("INSERT INTO users (username, email, password) VALUES ('" + username + "', '" + email + "', '" + password + "');")
     if err != nil {
-      fmt.Println("Failed to register : " + username)
+      fmt.Println("DEBUG::DB::Failed to register : " + username)
       fmt.Print(err)
     } else{
-      fmt.Println("DEBUG::Registered " + username + " successfully!")
+      fmt.Println("DEBUG::DB::Registered " + username + " successfully!")
     }
 }
 
@@ -76,45 +82,58 @@ func getFiles(projectId string) (*sql.Rows){
   return entries
 }
 
-/*
-** Fetches the user id for the username given, calls clone using it and the default user/project. returns
-*/
-func newProject(username string) (bool){
-  var userId string
-  entries, _ := db.Query("SELECT userId FROM users WHERE username='" + username + "';")
-  for entries.Next() {
-    err := entries.Scan(&userId)
-    if err != nil {
-      fmt.Println("DEBUG:: Fatal no entries!")
-    } else {
-      cloneProject("1", "1", userId);
-    }
+func saveFile(fileId string, contents string) {
+  _, err := db.Query("UPDATE files SET contents = '" + contents + "' WHERE fileId = " + fileId + ";")
+  if err != nil{
+    fmt.Println(err)
   }
-  return true
 }
 
-func cloneProject(targetId string, oldProjectId string, newId string){
+
+func cloneProject(targetProjectId string, userId string) (string) {
   // First we add a new project for the requested user.
   // Learned about returning, which sends back the variable after creation!
   var newProjectId string
-  results, _ := db.Query("INSERT INTO projects (userId, name) VALUES ('" + newId + "', 'Default') RETURNING projectId;")
+  results, _ := db.Query("INSERT INTO projects (userId, name) VALUES ('" + userId + "', 'Default') RETURNING projectId;")
   for results.Next() {
     err := results.Scan(&newProjectId)
     fmt.Println(err)
   }
 
   var contents string
+  var filename string
   // Next we select and iterate all the files in the old project to add them to the new.
-  entries, _ := db.Query("SELECT contents FROM files WHERE projectId='" + oldProjectId + "';")
+  entries, _ := db.Query("SELECT contents, filename FROM files WHERE projectId='" + targetProjectId + "';")
   for entries.Next() {
-    entries.Scan(&contents)
-    _, err :=db.Query("INSERT INTO files (contents, projectId) VALUES ('" + contents + "', '" + newProjectId + "') RETURNING fileId;")
+    entries.Scan(&contents, &filename)
+    _, err :=db.Query("INSERT INTO files (contents, projectId, filename) VALUES ('" + contents + "', '" + newProjectId + "', '" + filename + "') RETURNING fileId;")
     fmt.Println(err)
   }
 
-  fmt.Println("DEBUG:: Cloning default project for " + newId + "... ")
+  fmt.Println("DEBUG::DB: Cloning project for " + userId + "... ")
+  return newProjectId
 }
 
+
+func getUserId(username string) (string){
+  var contents string
+  // Next we select and iterate all the files in the old project to add them to the new.
+  entries, _ := db.Query("SELECT userid FROM users WHERE username='" + username + "';")
+  for entries.Next() {
+    entries.Scan(&contents)
+    //_, err :=db.Query("INSERT INTO files (contents, projectId) VALUES ('" + contents + "', '" + newProjectId + "') RETURNING fileId;")
+    fmt.Println(err)
+  }
+  return contents
+}
+
+func returnSingleRow(rows *sql.Rows) (string){
+  var contents string
+  for rows.Next() {
+    rows.Scan(&contents)
+  }
+  return contents
+}
 
 func closeDatabase(){
   fmt.Println("Closing Database connection..")
