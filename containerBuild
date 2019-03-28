@@ -3,7 +3,10 @@ if [ "$1" == "clean" ]; then
     runtime="--force-recreate"
     echo "Clean run.."
 fi
-docker rm app --force
+
+docker rm app --force &>/dev/null
+
+set -e
 docker build -t app .
-#docker run -p 8080:8080 
+#docker run -it app bash
 docker-compose up $runtime

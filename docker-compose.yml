@@ -1,15 +1,17 @@
 version: '3'
+
 services:
   db:
     image: postgres
-    external_links:
-        - docker-postgres
     ports:
       - "5432:5432"
     environment:
       POSTGRES_DB: app
       POSTGRES_USER: test
       POSTGRES_PASSWORD: test
+    networks:
+      - backend
+
   app:
     depends_on:
       - db
@@ -17,8 +19,14 @@ services:
     ports:
       - "9191:9191"
     environment:
-      - DB_HOST=docker-postgres
-      - DB_PORT="5432"
-      - DB_USER="test"
-      - DB_PASS="test"
-      - DB_NAME="app"
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_USER: "test"
+      DB_PASS: "test"
+      DB_NAME: "app"
+    networks:
+      - backend
+
+# Networks to be created to facilitate communication between containers
+networks:
+  backend:

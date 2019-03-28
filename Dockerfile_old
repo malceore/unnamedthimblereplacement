@@ -1,0 +1,14 @@
+FROM golang:1.11
+LABEL maintainer="Brandon Wood<malceore@gmail.com>"
+WORKDIR /home/b/Code/gocode/src/github.com/malceore/thimble_replacement/
+COPY . /home/b/Code/gocode/src/github.com/malceore/thimble_replacement/
+#RUN go version && go test
+RUN set -x && \
+    go get github.com/gorilla/mux && \
+    go get github.com/gorilla/securecookie &&\
+    go get -u github.com/lib/pq
+
+RUN go build -o main
+EXPOSE 9191
+#ENTRYPOINT ["./main"]
+CMD ["./main"]

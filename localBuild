@@ -6,7 +6,6 @@ export DB_USER="test"
 export DB_PASS="test"
 export DB_NAME="app"
 
-set -e
 go test -v
 go build -o bin/main 
 echo "Running..."
