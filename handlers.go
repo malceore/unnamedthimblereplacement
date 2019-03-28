@@ -61,7 +61,7 @@ func LoginHandler(response http.ResponseWriter, request *http.Request) {
 
 func LogoutHandler(response http.ResponseWriter, request *http.Request) {
     cookie := &http.Cookie{
-        Name:   "cookie",
+        Name:   "thimble_cookie",
         Value:  "",
         Path:   "/",
         MaxAge: -1,
@@ -93,6 +93,14 @@ func SaveHandler(response http.ResponseWriter, request *http.Request){
 
 
 func EditorHandler(response http.ResponseWriter, request *http.Request){
+    // Protected Websites requires login cookies.
+    fmt.Println("DEBUG::Editor Handler")
+    var exists = CheckCookie(request);
+    if (!exists){
+      fmt.Println("Not allowed!")
+      http.Redirect(response, request, "/login", 302)
+    }
+
     // Confirm that a project was given or just throw an error.
     var project = strings.Split(request.URL.Path, "/")
     //fmt.Println(project)
@@ -152,10 +160,19 @@ func SetCookie(userName string, response http.ResponseWriter) {
     }
     if encoded, err := cookieHandler.Encode("cookie", value); err == nil {
         cookie := &http.Cookie{
-            Name:  "cookie",
+            Name:  "cookiethimble",
             Value: encoded,
             Path:  "/",
         }
         http.SetCookie(response, cookie)
     }
+}
+
+func CheckCookie(r *http.Request) (exists bool)  {
+	_, err := r.Cookie("cookiethimble")
+	if err != nil {
+		fmt.Println("cookiethimble")
+		return false
+	}
+        return true
 }

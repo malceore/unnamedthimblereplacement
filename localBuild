@@ -7,6 +7,7 @@ export DB_PASS="test"
 export DB_NAME="app"
 
 go test -v
+set -e
 go build -o bin/main 
 echo "Running..."
 bin/./main

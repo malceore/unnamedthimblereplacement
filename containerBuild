@@ -4,7 +4,7 @@ if [ "$1" == "clean" ]; then
     echo "Clean run.."
 fi
 
-docker rm app --force &>/dev/null
+#docker rm app --force &>/dev/null
 
 set -e
 docker build -t app .
